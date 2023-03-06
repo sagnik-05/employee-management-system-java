@@ -1,0 +1,22 @@
+problem statement:
+Implement a system that keeps details of a company's employees, and records their monthly wage payments and deductions for tax and national insurance. The system must be able to provide a series of reports, for example displaying pay slips for individual employees, including net pay and gross pay.
+
+Approach:
+
+Create an Employee class that has the following fields: name, address, employee ID, salary, tax rate, and national insurance rate. Define appropriate getters and setters for each field.
+
+Create a Payroll class that stores a list of Employee objects and provides methods for adding new employees, updating employee information, and calculating monthly pay and deductions.
+
+Implement a method in the Payroll class that calculates gross pay for each employee. The formula for gross pay is salary / 12.
+
+Implement a method in the Payroll class that calculates tax deductions for each employee. The formula for tax deduction is gross pay * tax rate.
+
+Implement a method in the Payroll class that calculates national insurance deductions for each employee. The formula for national insurance deduction is gross pay * national insurance rate.
+
+Implement a method in the Payroll class that calculates net pay for each employee. The formula for net pay is gross pay - tax deductions - national insurance deductions.
+
+Create a main method that allows users to interact with the system by adding new employees, updating employee information, and generating pay slips.
+
+Use Java's file input/output functionality to save employee data and pay slip information to a file.
+
+This is a general outline of the steps that would be required to implement a system that tracks employee details and payroll information. However, it is important to note that the specific implementation of the code would depend on the specific requirements of the system and the programming environment being used.

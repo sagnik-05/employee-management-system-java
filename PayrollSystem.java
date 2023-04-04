@@ -1,8 +1,16 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Iterator;
+import java.io.PrintWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class PayrollSystem {
-    private List<Employee> employees;
+    private List<Employee> employees = new ArrayList<>();
+    private final String FILENAME = "employees.txt";
 
     public PayrollSystem() {
         employees = new ArrayList<Employee>();
@@ -10,6 +18,22 @@ public class PayrollSystem {
 
     public void addEmployee(Employee employee) {
         employees.add(employee);
+    }
+
+    public void deleteEmployee(String name) {
+        boolean removed = false;
+        Iterator<Employee> iter = employees.iterator();
+        while (iter.hasNext()) {
+            Employee employee = iter.next();
+            if (employee.getName().equals(name)) {
+                iter.remove();
+                System.out.println("Employee " + name + " has been removed.");
+                removed = true;
+            }
+        }
+        if (!removed) {
+            System.out.println("Employee " + name + " not found.");
+        }
     }
 
     public Employee findEmployee(String name) {
@@ -30,61 +54,97 @@ public class PayrollSystem {
         }
     }
 
+    private void saveEmployeesToFile() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILENAME))) {
+            for (Employee employee : employees) {
+                writer.println(employee.getName() + "," + employee.getGrossPay() + "," + employee.getTaxRate() + ","
+                        + employee.getniRate());
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving employees to file: " + e.getMessage());
+        }
+    }
+
+    private void loadEmployeesFromFile() {
+        try (Scanner scanner = new Scanner(new File(FILENAME))) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] fields = line.split(",");
+                if (fields.length == 4) {
+                    String name = fields[0];
+                    double salary = Double.parseDouble(fields[1]);
+                    double taxRate = Double.parseDouble(fields[2]);
+                    double taxPaid = Double.parseDouble(fields[3]);
+                    Employee employee = new Employee(name, salary, taxRate, taxPaid);
+                    employees.add(employee);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("No employee data found.");
+        }
+    }
+
     public static void main(String[] args) {
 
-
         PayrollSystem payrollSystem = new PayrollSystem();
+        payrollSystem.loadEmployeesFromFile();
 
-        Employee sagnik = new Employee("sagnik", 100000, 0.3, 0.2);
-        payrollSystem.addEmployee(sagnik);
+        Scanner scanner = new Scanner(System.in);
 
-        Employee sarah = new Employee("Sarah", 60000, 0.2, 0.1);
-        payrollSystem.addEmployee(sarah);
+        while (true) {
+            System.out.println("Enter a operation:");
+            System.out.println("1. Add Employee");
+            System.out.println("2. Delete Employee");
+            System.out.println("3. Display Pay Slip");
+            System.out.println("4. Save to File");
+            System.out.println("5. Exit");
+            System.out.println("========================================");
+            System.out.println("Enter a choice:");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            System.out.println("========================================");
 
-        payrollSystem.displayPaySlip("sagnik");
-        payrollSystem.displayPaySlip("Sarah");
+            if (choice == 1) {
+                System.out.print("Enter name of employee: ");
+                String name = scanner.nextLine();
+                System.out.print("Enter salary of employee: ");
+                double salary = scanner.nextDouble();
+                System.out.print("Enter tax rate of employee (in decimal): ");
+                double taxRate = scanner.nextDouble();
+                System.out.print("Enter National Insurance Rate of employee (in decimal[0.x]): ");
+                double niRate = scanner.nextDouble();
+                Employee employee = new Employee(name, salary, taxRate, niRate);
+                payrollSystem.addEmployee(employee);
+                System.out.println("Employee added successfully.");
+            } 
+            else if (choice == 2) {
+                System.out.print("Enter name of employee to delete: ");
+                String name = scanner.nextLine();
+                payrollSystem.deleteEmployee(name);
+                System.out.println("Employee deleted successfully.");
+            } 
+            else if (choice == 3) {
+                System.out.print("Enter name of employee to display pay slip: ");
+                String name = scanner.nextLine();
+                System.out.println("========================================");
+                payrollSystem.displayPaySlip(name);
+                System.out.println("========================================");
+            } 
+            else if (choice == 4) {
+                payrollSystem.saveEmployeesToFile();
+                System.out.println("Data saved to file.");
+            } 
+            else if (choice == 5) {
+                payrollSystem.saveEmployeesToFile();
+                System.out.println("Data saved to file.");
+                System.out.println("Exiting...");
+                break;
+            } 
+            else {
+                System.out.println("Invalid choice. Please try again.");
+            }
+        }
+        scanner.close();
 
-        double annualTax = sagnik.calculateTax();
-        double taxPaid = sagnik.getTaxPaid();
-        System.out.println("Employee " + sagnik.getName() + " paid " + taxPaid + " in taxes this year.");
     }
 }
-
-/* 
-PayrollSystem payrollSystem = new PayrollSystem();
-
-System.out.print("Enter name of first employee: ");
-String name1 = scanner.nextLine();
-System.out.print("Enter salary of first employee: ");
-double salary1 = scanner.nextDouble();
-System.out.print("Enter tax rate of first employee (in decimal): ");
-double taxRate1 = scanner.nextDouble();
-System.out.print("Enter tax paid of first employee: ");
-double taxPaid1 = scanner.nextDouble();
-
-Employee employee1 = new Employee(name1, salary1, taxRate1, taxPaid1);
-payrollSystem.addEmployee(employee1);
-
-scanner.nextLine();
-
-System.out.print("Enter name of second employee: ");
-String name2 = scanner.nextLine();
-System.out.print("Enter salary of second employee: ");
-double salary2 = scanner.nextDouble();
-System.out.print("Enter tax rate of second employee (in decimal): ");
-double taxRate2 = scanner.nextDouble();
-System.out.print("Enter tax paid of second employee: ");
-double taxPaid2 = scanner.nextDouble();
-
-Employee employee2 = new Employee(name2, salary2, taxRate2, taxPaid2);
-payrollSystem.addEmployee(employee2);
-
-scanner.nextLine();
-
-System.out.print("Enter name of employee to display pay slip: ");
-String name = scanner.nextLine();
-payrollSystem.displayPaySlip(name);
-
-scanner.close();
-}
-*/

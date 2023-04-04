@@ -19,12 +19,18 @@ public class Employee {
         taxPaid += annualTax;
         return annualTax;
     }
+    public double getTaxRate() {
+        return taxRate;
+    }
+    public double getniRate() {
+        return niRate;
+    }
     public double getTaxPaid() {
         return taxPaid;
     }
     public double getNetPay() {
-        double taxableIncome = salary - (salary * niRate);
-        double tax = taxableIncome * taxRate;
+        double nitax = (salary * niRate)/100;
+        double tax = nitax + (salary * taxRate)/100;
         double netPay = salary - tax;
         return netPay;
     }
@@ -38,7 +44,7 @@ public class Employee {
     }
 
     public String toString() {
-        return "Name: " + name + ", Gross Pay: " + getGrossPay() + ", Net Pay: " + getNetPay();
+        return "<<  Name: " + name + "|| Gross Pay: " + getGrossPay() + "|| Net Pay: " + getNetPay()+" >>";
     }
 }
 

@@ -1,12 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Iterator;
-import java.io.PrintWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.*;
+import java.io.*;
 
 public class PayrollSystem {
     private List<Employee> employees = new ArrayList<>();
@@ -33,6 +26,28 @@ public class PayrollSystem {
         }
         if (!removed) {
             System.out.println("Employee " + name + " not found.");
+            return;
+        }
+        List<String> temp = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILENAME))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split(",");
+                if (!tokens[0].equals(name)) {
+                    temp.add(line);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading from " + FILENAME);
+            return;
+        }
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILENAME))) {
+            for (String line : temp) {
+                writer.println(line);
+            }
+            System.out.println("Employee details saved to " + FILENAME);
+        } catch (IOException e) {
+            System.out.println("Error writing to " + FILENAME);
         }
     }
 
@@ -116,31 +131,26 @@ public class PayrollSystem {
                 Employee employee = new Employee(name, salary, taxRate, niRate);
                 payrollSystem.addEmployee(employee);
                 System.out.println("Employee added successfully.");
-            } 
-            else if (choice == 2) {
+            } else if (choice == 2) {
                 System.out.print("Enter name of employee to delete: ");
                 String name = scanner.nextLine();
                 payrollSystem.deleteEmployee(name);
                 System.out.println("Employee deleted successfully.");
-            } 
-            else if (choice == 3) {
+            } else if (choice == 3) {
                 System.out.print("Enter name of employee to display pay slip: ");
                 String name = scanner.nextLine();
                 System.out.println("========================================");
                 payrollSystem.displayPaySlip(name);
                 System.out.println("========================================");
-            } 
-            else if (choice == 4) {
+            } else if (choice == 4) {
                 payrollSystem.saveEmployeesToFile();
                 System.out.println("Data saved to file.");
-            } 
-            else if (choice == 5) {
+            } else if (choice == 5) {
                 payrollSystem.saveEmployeesToFile();
                 System.out.println("Data saved to file.");
                 System.out.println("Exiting...");
                 break;
-            } 
-            else {
+            } else {
                 System.out.println("Invalid choice. Please try again.");
             }
         }

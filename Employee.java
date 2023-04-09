@@ -55,7 +55,3 @@ public class Employee {
 // The main method demonstrates how you could use the PayrollSystem class to add employees and display their pay slips.
 
 // Note that this is just a basic example and doesn't cover all possible use cases or edge cases. It's important to thoroughly test any code you write and handle any errors or exceptions that may occur.
-
-
-
-
